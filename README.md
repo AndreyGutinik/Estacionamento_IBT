@@ -239,7 +239,7 @@ Campos principais:
 ```json
 {
   "telegramBotToken": "COLE_SEU_TOKEN_AQUI",
-  "telegramChatId": "-1003911714658",
+  "telegramChatId": "COLE_O_CHAT-ID_AQUI",
   "commandPrefix": "/telao",
   "displayId": "",
   "position": "bottom",
