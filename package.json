@@ -1,6 +1,6 @@
 {
   "name": "alerta-ibt",
-  "version": "6.5.0",
+  "version": "6.5.1",
   "description": "Alerta-IBT",
   "main": "src/main.js",
   "author": "OpenAI",
