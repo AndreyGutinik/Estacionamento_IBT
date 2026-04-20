@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overlay</title>
+  <style>
+    @font-face { font-family: 'Marble'; src: url('../assets/fonts/Marble Light.ttf') format('truetype'); font-weight: 300; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Marble'; src: url('../assets/fonts/Marble Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Marble'; src: url('../assets/fonts/Marble Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Marble'; src: url('../assets/fonts/Marble SemiBold.ttf') format('truetype'); font-weight: 600; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Marble'; src: url('../assets/fonts/Marble Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Marble'; src: url('../assets/fonts/Marble ExtraBold.ttf') format('truetype'); font-weight: 800; font-style: normal; font-display: swap; }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: transparent;
+    }
+
+    body {
+      font-family: 'Marble', 'Segoe UI', Arial, sans-serif;
+    }
+
+    #bar {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: none;
+      align-items: center;
+      overflow: hidden;
+      box-shadow: 0 10px 24px rgba(0,0,0,.22);
+      transform: translateY(0);
+      opacity: 0;
+      border-radius: 0;
+    }
+
+    #bar.active { display: flex; }
+
+    #ticker {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      white-space: nowrap;
+      will-change: transform;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-shadow: 0 1px 2px rgba(0,0,0,.35);
+      transform: translate3d(100%, -50%, 0);
+      visibility: hidden;
+      backface-visibility: hidden;
+    }
+
+    #ticker.preview {
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: max-content;
+      max-width: calc(100% - 48px);
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  </style>
+</head>
+<body>
+  <div id="bar"><div id="ticker"></div></div>
+  <script src="./overlay.js"></script>
+</body>
+</html>

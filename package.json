@@ -1,0 +1,65 @@
+{
+  "name": "alerta-ibt",
+  "version": "6.5.0",
+  "description": "Alerta-IBT",
+  "main": "src/main.js",
+  "author": "OpenAI",
+  "scripts": {
+    "start": "set ELECTRON_RUN_AS_NODE=&& electron .",
+    "dist": "electron-builder --win nsis",
+    "dist:publish": "electron-builder --win nsis --publish always",
+    "release": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/release.ps1",
+    "release:publish": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/release.ps1 -Publish"
+  },
+  "dependencies": {
+    "electron-updater": "^6.3.9"
+  },
+  "devDependencies": {
+    "electron": "^30.5.1",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "br.ibt.alertaibt",
+    "productName": "Alerta-IBT",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "AndreyGutinik",
+        "repo": "Estacionamento_IBT",
+        "releaseType": "release"
+      }
+    ],
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "icon": "assets/icons/app.ico",
+    "artifactName": "Avisos-de-Estacionamento-IBT-Setup-${version}.${ext}",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icons/app.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Avisos de Estacionamento - IBT",
+      "installerIcon": "assets/icons/app.ico",
+      "uninstallerIcon": "assets/icons/app.ico",
+      "installerHeaderIcon": "assets/icons/app.ico",
+      "artifactName": "Avisos-de-Estacionamento-IBT-Setup-${version}.${ext}"
+    }
+  }
+}

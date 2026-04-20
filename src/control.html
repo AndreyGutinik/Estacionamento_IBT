@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alerta-IBT</title>
+  <link rel="stylesheet" href="./control.css" />
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <div class="brand" onclick="var s=document.querySelector('.shell'); if(s.classList.contains('collapsed')) s.classList.remove('collapsed');">
+          <div class="brand-mark"><img src="../assets/icons/logo.svg" alt="" /></div>
+          <div class="brand-name">Alerta-IBT</div>
+        </div>
+        <button type="button" class="sidebar-collapse" id="sidebarCollapseBtn" title="Recolher sidebar" aria-label="Recolher sidebar" onclick="document.querySelector('.shell').classList.add('collapsed')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+            <path d="M9 4v16"></path>
+          </svg>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="tab-btn active" data-tab="home" title="Início">
+          <img src="../assets/icons/casa.svg" alt="" />
+          <span class="tab-label">Início</span>
+        </button>
+        <button class="tab-btn" data-tab="content" title="Conteúdo">
+          <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M8 6h13"></path>
+            <path d="M8 12h13"></path>
+            <path d="M8 18h13"></path>
+            <circle cx="3.5" cy="6" r="1.1"></circle>
+            <circle cx="3.5" cy="12" r="1.1"></circle>
+            <circle cx="3.5" cy="18" r="1.1"></circle>
+          </svg>
+          <span class="tab-label">Conteúdo</span>
+        </button>
+        <button class="tab-btn" data-tab="config" title="Configurações">
+          <img src="../assets/icons/definicoes.svg" alt="" />
+          <span class="tab-label">Configurações</span>
+        </button>
+        <button class="tab-btn" data-tab="logs" title="Logs">
+          <svg class="tab-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+            <path d="M14 3v6h6"></path>
+            <path d="M8 13h8"></path>
+            <path d="M8 17h5"></path>
+          </svg>
+          <span class="tab-label">Logs</span>
+        </button>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <section id="page-home" class="page active">
+        <div class="hero">
+          <div class="title-group">
+            <div class="hero-logo"><img src="../assets/icons/logo.svg" alt="Logo" /></div>
+            <div>
+              <h1>Alerta-IBT</h1>
+              <div class="subtitle">Fila, histórico, urgentes e operação local ou Telegram</div>
+            </div>
+          </div>
+          <div class="toolbar">
+            <button class="btn-secondary" id="pauseBtn">Pausar overlay</button>
+            <button class="btn-secondary" id="previewBtn">Mostrar barra 3s</button>
+            <button class="btn-secondary" id="showConfigPathBtn">Ver arquivo de config</button>
+          </div>
+        </div>
+
+        <div class="grid-main">
+          <div class="stack">
+            <div class="card">
+              <div class="label">Mensagem atual</div>
+              <div id="currentBox" class="message-box empty">Nenhuma mensagem ativa.</div>
+              <div class="button-row" style="margin-top:12px;">
+                <button class="btn-secondary" id="nextBtn">Próxima mensagem</button>
+                <button class="btn-danger" id="clearCurrentBtn">Encerrar atual</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="label">Mensagem</div>
+              <textarea id="localMessage" placeholder="DIGITE A MENSAGEM LOCAL PARA EXIBIR NO TELÃO."></textarea>
+              <div class="button-row" style="margin-top:10px;">
+                <button class="btn-primary" id="sendBtn">Enviar</button>
+                <button class="btn-urgent" id="sendUrgentBtn">Enviar urgente</button>
+                <button class="btn-danger" id="clearFieldBtn">Limpar campo</button>
+              </div>
+              <div class="keyboard-tip helper-text">
+                Enter envia • Ctrl+Enter envia urgente • Shift+Enter quebra linha • Esc limpa o campo • Setas navegam na fila • Ctrl+Seta move item • Delete remove item.
+              </div>
+              <div id="statusBar" class="status-bar">Pronto.</div>
+            </div>
+
+            <div class="card">
+              <div class="queue-topline">
+                <div class="label" style="margin:0;">Modelos rápidos</div>
+                <div class="helper-text">Use, envie ou marque como urgente</div>
+              </div>
+              <div id="favoritesBox" class="list"></div>
+            </div>
+          </div>
+
+          <div class="stack">
+            <div class="card">
+              <div class="label">Status</div>
+              <div class="status-grid">
+                <div class="mini"><div class="label">Telegram</div><div id="telegramStatus" class="mini-value status-off">Offline</div></div>
+                <div class="mini"><div class="label">Overlay</div><div id="overlayStatus" class="mini-value status-off">Ocioso</div></div>
+                <div class="mini"><div class="label">Fila</div><div id="queueCount" class="mini-value">0</div></div>
+                <div class="mini"><div class="label">Histórico</div><div id="historyCount" class="mini-value">0</div></div>
+              </div>
+              <div class="status-detail">
+                <div id="telegramDetail" class="helper-text">Sem erro recente.</div>
+              </div>
+            </div>
+
+            <div class="section-grid">
+              <div class="card">
+                <div class="queue-topline">
+                  <div class="label" style="margin:0;">Fila</div>
+                  <div class="button-row">
+                    <button class="btn-danger" id="clearQueueBtn">Limpar</button>
+                  </div>
+                </div>
+                <div id="queueBox" class="list"></div>
+              </div>
+
+              <div class="card">
+                <div class="queue-topline">
+                  <div class="label" style="margin:0;">Histórico</div>
+                  <div class="button-row"><button class="btn-secondary" id="clearHistoryBtn">Limpar</button></div>
+                </div>
+                <div id="historyBox" class="list"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-content" class="page">
+        <div class="hero">
+          <div class="title-group">
+            <div class="hero-logo"><img src="../assets/icons/logo.svg" alt="Logo" /></div>
+            <div>
+              <h1>Conteúdo</h1>
+              <div class="subtitle">Modelos rápidos e correções personalizadas do Telegram</div>
+            </div>
+          </div>
+          <div class="toolbar">
+            <button class="btn-primary" onclick="document.getElementById('saveBtn').click()">Salvar e aplicar</button>
+          </div>
+        </div>
+
+        <div class="content-grid">
+          <div class="card section-card">
+            <div class="section-header">
+              <div class="section-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                </svg>
+              </div>
+              <div>
+                <div class="section-title">Modelos rápidos</div>
+                <div class="section-subtitle">Uma mensagem por linha — elas aparecem na tela inicial como botões prontos.</div>
+              </div>
+            </div>
+            <textarea id="favoriteMessages" class="textarea-plain" placeholder="FAROL ACESO&#10;VIDRO ABERTO&#10;ESTACIONADO EM LOCAL PROIBIDO"></textarea>
+          </div>
+
+          <div class="card section-card">
+            <div class="section-header">
+              <div class="section-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 20h9"></path>
+                  <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4z"></path>
+                </svg>
+              </div>
+              <div>
+                <div class="section-title">Correções personalizadas do Telegram</div>
+                <div class="section-subtitle">Uma regra por linha, no formato <code>texto errado =&gt; texto corrigido</code>.</div>
+              </div>
+            </div>
+            <textarea id="telegramCorrections" class="textarea-plain" placeholder="farol acesso => farol aceso&#10;parado local proibid => parado em local proibido"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-config" class="page">
+        <div class="hero">
+          <div class="title-group">
+            <div class="hero-logo"><img src="../assets/icons/logo.svg" alt="Logo" /></div>
+            <div>
+              <h1>Configurações</h1>
+              <div class="subtitle">Telegram, exibição, tipografia, cores e sistema</div>
+            </div>
+          </div>
+          <div class="toolbar">
+            <button class="btn-secondary" id="importConfigBtn">Importar config</button>
+            <button class="btn-secondary" id="exportConfigBtn">Exportar config</button>
+            <button class="btn-primary" id="saveBtn">Salvar e aplicar</button>
+          </div>
+        </div>
+
+        <div class="config-grid">
+          <div class="config-sections">
+            <div class="card section-card">
+              <div class="section-header">
+                <div class="section-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M22 2L11 13"></path>
+                    <path d="M22 2l-7 20-4-9-9-4 20-7z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <div class="section-title">Telegram</div>
+                  <div class="section-subtitle">Bot, chat e prefixo de comandos aceitos</div>
+                </div>
+              </div>
+              <div class="form-grid">
+                <div class="field full">
+                  <div class="field-head">
+                    <label for="telegramBotToken">Token do bot</label>
+                    <button type="button" class="lock-btn" id="credentialsLockBtn">🔒 Bloqueado</button>
+                  </div>
+                  <input id="telegramBotToken" type="text" autocomplete="off" />
+                </div>
+                <div class="field">
+                  <label for="telegramChatId">Chat ID do grupo</label>
+                  <input id="telegramChatId" type="text" autocomplete="off" />
+                </div>
+                <div class="field">
+                  <label for="commandPrefix">Prefixo aceito</label>
+                  <input id="commandPrefix" type="text" autocomplete="off" placeholder="/telao ou #telao" />
+                </div>
+                <div class="field full">
+                  <div class="helper-text">Ex.: /telao carro: gol branco / placa: FFO4745 / motivo: estacionado na contra mao.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card section-card">
+              <div class="section-header">
+                <div class="section-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+                    <path d="M8 21h8"></path>
+                    <path d="M12 17v4"></path>
+                  </svg>
+                </div>
+                <div>
+                  <div class="section-title">Exibição</div>
+                  <div class="section-subtitle">Monitor, posição e movimento da barra</div>
+                </div>
+              </div>
+              <div class="form-grid">
+                <div class="field">
+                  <label for="displayId">Monitor do telão</label>
+                  <select id="displayId"></select>
+                </div>
+                <div class="field">
+                  <label for="position">Posição da barra</label>
+                  <select id="position">
+                    <option value="top">Topo</option>
+                    <option value="bottom">Rodapé</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="barHeight">Altura da barra (px)</label>
+                  <input id="barHeight" type="number" min="12" step="1" />
+                </div>
+                <div class="field">
+                  <label for="speed">Velocidade do texto (px/s)</label>
+                  <input id="speed" type="number" min="20" step="5" />
+                </div>
+              </div>
+            </div>
+
+            <div class="card section-card">
+              <div class="section-header">
+                <div class="section-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2"></path>
+                    <path d="M9 20h6"></path>
+                    <path d="M12 4v16"></path>
+                  </svg>
+                </div>
+                <div>
+                  <div class="section-title">Tipografia</div>
+                  <div class="section-subtitle">Fonte, tamanho e margens do texto</div>
+                </div>
+              </div>
+              <div class="form-grid">
+                <div class="field">
+                  <label for="fontSize">Tamanho da fonte (px)</label>
+                  <input id="fontSize" type="number" min="10" step="1" />
+                </div>
+              </div>
+            </div>
+
+            <div class="card section-card">
+              <div class="section-header">
+                <div class="section-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="13.5" cy="6.5" r="2.5"></circle>
+                    <circle cx="19" cy="13" r="2.5"></circle>
+                    <circle cx="6" cy="12" r="2.5"></circle>
+                    <circle cx="10" cy="20" r="2.5"></circle>
+                    <path d="M12 22A10 10 0 1 1 22 12"></path>
+                  </svg>
+                </div>
+                <div>
+                  <div class="section-title">Cores</div>
+                  <div class="section-subtitle">Cores da barra exibida no telão</div>
+                </div>
+              </div>
+              <div class="form-grid">
+                <div class="field">
+                  <label for="bgColor">Cor de fundo</label>
+                  <input id="bgColor" type="color" />
+                </div>
+                <div class="field">
+                  <label for="textColor">Cor do texto</label>
+                  <input id="textColor" type="color" />
+                </div>
+              </div>
+            </div>
+
+            <div class="card section-card">
+              <div class="section-header">
+                <div class="section-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <div class="section-title">Sistema</div>
+                  <div class="section-subtitle">Comportamento da janela e inicialização</div>
+                </div>
+              </div>
+              <div class="form-grid">
+                <div class="field">
+                  <label for="alwaysOnTop">Sempre acima das outras janelas</label>
+                  <select id="alwaysOnTop"><option value="true">Sim</option><option value="false">Não</option></select>
+                </div>
+                <div class="field">
+                  <label for="startWithWindows">Iniciar junto com o Windows</label>
+                  <select id="startWithWindows"><option value="true">Sim, minimizado</option><option value="false">Não</option></select>
+                </div>
+              </div>
+            </div>
+
+            <details class="card section-card advanced-card">
+              <summary>
+                <div class="section-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 20h9"></path>
+                    <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <div class="section-title">Avançado</div>
+                  <div class="section-subtitle">Ajustes finos de animação, polling e tipografia</div>
+                </div>
+                <span class="advanced-chevron" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </span>
+              </summary>
+              <div class="advanced-body">
+                <div class="form-grid">
+                  <div class="field">
+                    <label for="slideDurationMs">Duração da animação (ms)</label>
+                    <input id="slideDurationMs" type="number" min="80" step="10" />
+                  </div>
+                  <div class="field">
+                    <label for="pollIntervalMs">Consulta ao Telegram (ms)</label>
+                    <input id="pollIntervalMs" type="number" min="1500" step="500" />
+                  </div>
+                  <div class="field">
+                    <label for="paddingX">Margem horizontal (px)</label>
+                    <input id="paddingX" type="number" min="0" step="1" />
+                  </div>
+                  <div class="field full">
+                    <label for="fontFamily">Fonte</label>
+                    <input id="fontFamily" type="text" />
+                    <div class="helper-text">Padrão: família Marble incluída no projeto.</div>
+                  </div>
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <div class="stack">
+            <div class="card section-card preview-card">
+              <div class="section-header">
+                <div class="section-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </div>
+                <div>
+                  <div class="section-title">Preview visual da barra</div>
+                  <div class="section-subtitle">Pré-visualização em tempo real das configurações</div>
+                </div>
+              </div>
+              <div class="preview-screen" id="previewScreen">
+                <div class="preview-monitor-label" id="previewMonitorLabel">Monitor</div>
+                <div class="preview-bar" id="previewBar">
+                  <div class="preview-text" id="previewText">FOX PRATA | PLACA ETX-5678 | VIDROS ABERTOS</div>
+                </div>
+              </div>
+              <div class="button-row" style="margin-top:12px;">
+                <button class="btn-secondary" id="flashPreviewBtn">Mostrar barra 3s</button>
+                <button class="btn-secondary" id="testMonitorBtn">Testar monitor</button>
+              </div>
+            </div>
+
+            <div class="card section-card">
+              <div class="section-header">
+                <div class="section-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+                    <path d="M8 21h8"></path>
+                    <path d="M12 17v4"></path>
+                  </svg>
+                </div>
+                <div>
+                  <div class="section-title">Monitores detectados</div>
+                  <div class="section-subtitle">Lista atual do sistema</div>
+                </div>
+              </div>
+              <div id="monitorsBox" class="list"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-logs" class="page">
+        <div class="hero">
+          <div class="title-group">
+            <div class="hero-logo"><img src="../assets/icons/logo.svg" alt="Logo" /></div>
+            <div>
+              <h1>Logs</h1>
+              <div class="subtitle">Logs em texto para diagnóstico rápido</div>
+            </div>
+          </div>
+          <div class="log-toolbar">
+            <button class="btn-secondary" id="refreshLogsBtn">Atualizar</button>
+            <button class="btn-secondary" id="copyLogsBtn">Copiar logs</button>
+            <button class="btn-secondary" id="exportLogsBtn">Exportar logs</button>
+            <button class="btn-danger" id="clearLogsBtn">Limpar logs</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="label">Terminal de logs</div>
+          <div class="log-stats">
+            <div class="log-chip">Total<strong id="logTotalCount">0</strong></div>
+            <div class="log-chip">Info<strong id="logInfoCount">0</strong></div>
+            <div class="log-chip">Ação<strong id="logActionCount">0</strong></div>
+            <div class="log-chip">Aviso<strong id="logWarnCount">0</strong></div>
+            <div class="log-chip">Erro<strong id="logErrorCount">0</strong></div>
+          </div>
+          <pre id="logsBox" class="terminal-log"></pre>
+        </div>
+      </section>
+
+    </main>
+  </div>
+  <script src="./control.js"></script>
+</body>
+</html>

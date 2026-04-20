@@ -1,0 +1,30 @@
+const { contextBridge, ipcRenderer } = require('electron');
+
+contextBridge.exposeInMainWorld('appApi', {
+  getInitialData: () => ipcRenderer.invoke('app:get-initial-data'),
+  saveConfig: (config) => ipcRenderer.invoke('app:save-config', config),
+  queueMessage: (text, options = {}) => ipcRenderer.invoke('app:queue-message', { text, options }),
+  clearQueue: () => ipcRenderer.invoke('app:clear-queue'),
+  clearCurrent: () => ipcRenderer.invoke('app:clear-current'),
+  nextMessage: () => ipcRenderer.invoke('app:next-message'),
+  pauseOverlay: () => ipcRenderer.invoke('app:pause-overlay'),
+  removeQueueItem: (id) => ipcRenderer.invoke('app:remove-queue-item', id),
+  moveQueueItem: (id, direction) => ipcRenderer.invoke('app:move-queue-item', { id, direction }),
+  repeatQueueItem: (id) => ipcRenderer.invoke('app:repeat-queue-item', id),
+  reuseHistoryItem: (id, urgent = false) => ipcRenderer.invoke('app:reuse-history-item', { id, urgent }),
+  flashPreview: (payload = {}) => ipcRenderer.invoke('app:flash-preview', payload),
+  showConfigPath: () => ipcRenderer.invoke('app:show-config-path'),
+  exportConfig: () => ipcRenderer.invoke('app:export-config'),
+  importConfig: () => ipcRenderer.invoke('app:import-config'),
+  clearHistory: () => ipcRenderer.invoke('app:clear-history'),
+  getLogs: () => ipcRenderer.invoke('app:get-logs'),
+  clearLogs: () => ipcRenderer.invoke('app:clear-logs'),
+  exportLogs: () => ipcRenderer.invoke('app:export-logs'),
+  onStatus: (callback) => ipcRenderer.on('control:status', (_event, payload) => callback(payload)),
+  onError: (callback) => ipcRenderer.on('control:error', (_event, message) => callback(message)),
+  onOverlayConfig: (callback) => ipcRenderer.on('overlay:set-config', (_event, payload) => callback(payload)),
+  onOverlayStartMessage: (callback) => ipcRenderer.on('overlay:start-message', (_event, payload) => callback(payload)),
+  onOverlayClear: (callback) => ipcRenderer.on('overlay:clear', () => callback()),
+  onOverlayFinishNow: (callback) => ipcRenderer.on('overlay:finish-now', () => callback()),
+  notifyOverlayComplete: () => ipcRenderer.send('overlay:message-complete')
+});

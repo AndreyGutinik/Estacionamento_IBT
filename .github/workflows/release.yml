@@ -1,0 +1,63 @@
+name: release-windows
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Resolve version
+        id: version
+        shell: pwsh
+        run: |
+          if ("${{ github.event_name }}" -eq "workflow_dispatch") {
+            $package = Get-Content package.json -Raw | ConvertFrom-Json
+            $version = "$($package.version)".Trim()
+          } else {
+            $version = "${{ github.ref_name }}".Trim().TrimStart("v")
+          }
+
+          if (-not ($version -match '^\d+\.\d+\.\d+$')) {
+            throw "Versao invalida: $version"
+          }
+
+          "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: Sync package version
+        shell: pwsh
+        run: npm.cmd version ${{ steps.version.outputs.version }} --no-git-tag-version --allow-same-version
+
+      - name: Install dependencies
+        run: npm.cmd ci
+
+      - name: Build and publish release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+        run: npm.cmd exec electron-builder -- --win nsis --publish always
+
+      - name: Upload dist artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: alerta-ibt-${{ steps.version.outputs.version }}
+          path: dist/*
+          if-no-files-found: error

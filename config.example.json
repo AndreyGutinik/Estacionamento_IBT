@@ -1,0 +1,34 @@
+{
+  "telegramBotToken": "COLE_SEU_TOKEN_AQUI",
+  "telegramChatId": "-1003911714658",
+  "commandPrefix": "/telao",
+  "displayId": "",
+  "position": "bottom",
+  "barHeight": 40,
+  "speed": 90,
+  "bgColor": "#000000",
+  "textColor": "#fff7e8",
+  "fontSize": 26,
+  "fontFamily": "Marble, \"Marble Regular\", \"Segoe UI\", Arial, sans-serif",
+  "paddingX": 24,
+  "alwaysOnTop": true,
+  "pollIntervalMs": 3000,
+  "slideDurationMs": 300,
+  "startWithWindows": false,
+  "credentialsLocked": true,
+  "telegramCustomCorrections": [
+    {
+      "from": "farol acesso",
+      "to": "farol aceso"
+    },
+    {
+      "from": "parado local proibid",
+      "to": "parado em local proibido"
+    }
+  ],
+  "favoriteMessages": [
+    "FAROL ACESO",
+    "VIDRO ABERTO",
+    "ESTACIONADO EM LOCAL PROIBIDO"
+  ]
+}
