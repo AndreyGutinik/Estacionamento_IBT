@@ -1,6 +1,6 @@
 {
   "telegramBotToken": "COLE_SEU_TOKEN_AQUI",
-  "telegramChatId": "-1003911714658",
+  "telegramChatId": "COLE_SEU_CHAT_ID_AQUI",
   "commandPrefix": "/telao",
   "displayId": "",
   "position": "bottom",
@@ -14,7 +14,7 @@
   "alwaysOnTop": true,
   "pollIntervalMs": 3000,
   "slideDurationMs": 300,
-  "startWithWindows": false,
+  "startWithWindows": true,
   "credentialsLocked": true,
   "telegramCustomCorrections": [
     {

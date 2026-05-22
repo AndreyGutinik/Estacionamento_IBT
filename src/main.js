@@ -8,6 +8,7 @@ try { ({ autoUpdater } = require('electron-updater')); } catch (_) { autoUpdater
 
 const HTTP_CONTROL_PORT = 8787;
 const HTTP_CONTROL_HOST = '127.0.0.1';
+const STARTUP_HIDDEN_ARG = '--hidden';
 let httpControlServer = null;
 
 const gotLock = app.requestSingleInstanceLock();
@@ -72,7 +73,7 @@ const defaultConfig = {
   alwaysOnTop: true,
   pollIntervalMs: 3000,
   slideDurationMs: 320,
-  startWithWindows: false,
+  startWithWindows: true,
   credentialsLocked: true,
   telegramCustomCorrections: [],
   favoriteMessages: []
@@ -364,12 +365,26 @@ async function telegramRequestJson(config, method, endpoint, options = {}) {
   }
 }
 
+function wasLaunchedHidden() {
+  if (process.argv.includes(STARTUP_HIDDEN_ARG)) return true;
+  try {
+    return !!app.getLoginItemSettings().wasOpenedAtLogin;
+  } catch (_) {
+    return false;
+  }
+}
+
 function applyAutoLaunch(config) {
   try {
-    app.setLoginItemSettings({
-      openAtLogin: !!config.startWithWindows,
-      openAsHidden: !!config.startWithWindows
-    });
+    const enabled = !!config.startWithWindows;
+    const settings = {
+      openAtLogin: enabled,
+      openAsHidden: enabled
+    };
+    if (process.platform === 'win32' && enabled) {
+      settings.args = [STARTUP_HIDDEN_ARG];
+    }
+    app.setLoginItemSettings(settings);
   } catch (error) {
     console.error('Falha ao aplicar inicialização com o Windows:', error);
     addLog('error', 'Falha ao aplicar inicialização com o Windows', error.message || String(error));
@@ -1220,7 +1235,7 @@ function respondHttpJson(res, status, body) {
   res.writeHead(status, {
     'Content-Type': 'application/json; charset=utf-8',
     'Cache-Control': 'no-store',
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': 'http://127.0.0.1',
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type'
   });
@@ -1381,7 +1396,7 @@ app.whenReady().then(() => {
   currentConfig = normalizeConfig(loadJson(CONFIG_PATH, defaultConfig));
   loadHistory();
   loadLogs();
-  launchedAtStartup = !!app.getLoginItemSettings().wasOpenedAtLogin;
+  launchedAtStartup = wasLaunchedHidden();
   applyAutoLaunch(currentConfig);
   createTray();
   createControlWindow();

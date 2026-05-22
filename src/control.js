@@ -729,22 +729,21 @@ document.getElementById('pauseBtn').addEventListener('click', async () => {
   }
 });
 
-document.getElementById('previewBtn').addEventListener('click', async () => {
+async function runOverlayPreview() {
   try {
     const result = await window.appApi.flashPreview({ text: 'PREVIEW DO OVERLAY', durationMs: 3000 });
-    setStatus(result?.ok ? 'Preview exibido por 3 segundos.' : 'Não foi possível exibir o preview enquanto há uma mensagem ativa.', !result?.ok);
+    setStatus(
+      result?.ok ? 'Preview exibido por 3 segundos.' : 'Não foi possível exibir o preview enquanto há uma mensagem ativa.',
+      !result?.ok
+    );
   } catch (error) {
     setStatus(`Erro no preview: ${error.message || error}`, true);
   }
-});
+}
 
-document.getElementById('flashPreviewBtn').addEventListener('click', async () => {
-  try {
-    const result = await window.appApi.flashPreview({ text: 'PREVIEW DO OVERLAY', durationMs: 3000 });
-    setStatus(result?.ok ? 'Preview exibido por 3 segundos.' : 'Não foi possível exibir o preview enquanto há uma mensagem ativa.', !result?.ok);
-  } catch (error) {
-    setStatus(`Erro no preview: ${error.message || error}`, true);
-  }
+['previewBtn', 'flashPreviewBtn'].forEach((id) => {
+  const button = document.getElementById(id);
+  if (button) button.addEventListener('click', () => void runOverlayPreview());
 });
 
 document.getElementById('testMonitorBtn').addEventListener('click', async () => {
