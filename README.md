@@ -416,19 +416,9 @@ As mudanças recentes priorizam:
 - clareza operacional
 - praticidade de uso para quem opera o sistema
 
-## Contribuição
-
-Se for continuar o desenvolvimento:
-
-1. entenda o fluxo atual antes de refatorar
-2. preserve o que já funciona
-3. faça mudanças incrementais
-4. trate overlay, fila e Telegram como áreas sensíveis
-5. valide o comportamento antes de fechar a alteração
-
 ## Versão Atual
 
-`6.4.2`
+`7.0.0`
 
 ---
 
